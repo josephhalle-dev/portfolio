@@ -1,0 +1,1240 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Joseph Hallé · Consultant Data & IA</title>
+  <meta name="description" content="Joseph Hallé, étudiant en Bachelor Data, Applied AI & Business à Eugenia School. Recherche un stage de consultant Data & IA (Product Owner ou chef de projet), juin à août 2027.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script>
+    // Préférence « sombre partout » appliquée avant l'affichage.
+    (function () {
+      var saved = null;
+      try { saved = localStorage.getItem('all-dark'); } catch (e) { saved = null; }
+      var allDark = saved ? saved === '1' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.classList.toggle('all-dark', allDark);
+      document.documentElement.classList.add('js');
+    })();
+  </script>
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { ink: 'var(--ink)', muted: 'var(--muted)', line: 'var(--line)', accent: 'var(--accent)', danger: 'var(--danger)' },
+          fontFamily: { sans: ['"Host Grotesk"', 'system-ui', 'sans-serif'], mono: ['"IBM Plex Mono"', 'ui-monospace', 'monospace'] },
+          maxWidth: { page: '80rem' },
+        },
+      },
+    };
+  </script>
+  <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+
+  <style>
+    :root {
+      --bg: rgb(5 7 13);
+      --blue: #2759eb;
+      --blue-hover: #2152e0;
+      --ease: cubic-bezier(.16, 1, .3, 1);
+    }
+    .tone-dark, html.all-dark .tone-light {
+      --ink: #eef1f6; --muted: #ffffff; --line: rgba(255,255,255,.12);
+      --surface: rgba(11, 15, 25, .78); --accent: #7aa2ff; --danger: #ff9285;
+      --field: rgba(255,255,255,.04); --cell: #0b0f19;
+    }
+    .tone-light {
+      --ink: #0b0f17; --muted: #0b0f17; --line: rgba(11,15,23,.13);
+      --surface: rgba(255, 255, 255, .92); --accent: #2759eb; --danger: #b4372b;
+      --field: #ffffff; --cell: #ffffff;
+    }
+    html { background: var(--bg); }
+    body { background: transparent; color: var(--ink); }
+    ::selection { background: var(--blue); color: #fff; }
+    :focus-visible { outline: 2px solid var(--accent, #7aa2ff); outline-offset: 3px; border-radius: 3px; }
+    input, textarea { caret-color: var(--accent); }
+    html { scrollbar-color: #2a3344 #05070d; }
+    html.lenis, html.lenis body { height: auto; }
+    .lenis.lenis-smooth { scroll-behavior: auto !important; }
+    a { text-underline-offset: .22em; text-decoration-thickness: 1px; }
+    h1, h2, h3 { text-wrap: balance; }
+    p { text-wrap: pretty; }
+    .num { font-variant-numeric: tabular-nums; }
+    section { color: var(--ink); position: relative; }
+
+    /* ---------- Fond : couleur pilotée par le défilement + halo bleu ---------- */
+    #bg { position: fixed; inset: 0; z-index: -2; background: var(--bg); overflow: hidden; }
+    #glow {
+      position: absolute; width: 120vmax; height: 120vmax; left: 0; top: 0;
+      background: radial-gradient(closest-side, rgba(196, 214, 255, 1), rgba(92, 140, 255, 1) 22%, rgba(52, 104, 255, .9) 42%, rgba(38, 84, 240, .45) 60%, rgba(38, 84, 240, 0) 76%);
+      filter: blur(20px); will-change: transform, opacity;
+    }
+    #scene { position: fixed; inset: 0; z-index: -1; width: 100vw; height: 100vh; display: block; pointer-events: none; }
+
+    /* ---------- En-tête ---------- */
+    .hdr { position: fixed; inset: 0 0 auto 0; z-index: 40; color: #eef1f6; transition: color .5s var(--ease); }
+    .hdr::before { content: ""; position: absolute; inset: 0; background: rgba(5,7,13,.55); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid rgba(255,255,255,.06); transition: background-color .5s var(--ease), border-color .5s; pointer-events: none; }
+    html.is-light:not(.all-dark) .hdr { color: #0b0f17; }
+    html.is-light:not(.all-dark) .hdr::before { background: rgba(236,238,242,.82); border-color: rgba(11,15,23,.08); }
+    .navlink { display: inline-flex; align-items: center; gap: .45rem; font-size: .9rem; }
+    .navlink .plus { display: inline-grid; place-items: center; width: 1rem; height: 1rem; border: 1px solid currentColor; opacity: .55; transition: transform .5s var(--ease), opacity .3s; }
+    .navlink:hover .plus { transform: rotate(90deg); opacity: 1; }
+    .icon-btn { display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border: 1px solid color-mix(in srgb, currentColor 35%, transparent); border-radius: 4px; }
+    .icon-btn:hover { border-color: currentColor; }
+
+    /* ---------- Boutons ---------- */
+    .btn { display: inline-flex; align-items: center; gap: .6rem; padding: .85rem 1.2rem; font-size: .92rem; font-weight: 500; border-radius: 3px; transition: background-color .3s var(--ease), border-color .3s, color .3s; }
+    .btn-blue { background: var(--blue); color: #fff; }
+    .btn-blue:hover { background: var(--blue-hover); }
+    .btn-blue svg { transition: transform .5s var(--ease); }
+    .btn-blue:hover svg { transform: translateX(4px); }
+
+    /* « Me contacter » : reflet qui traverse + onde qui s'écarte, en boucle */
+    .btn-cta { position: relative; isolation: isolate; }
+    .btn-cta::after { content: ""; position: absolute; inset: 0; border-radius: inherit; border: 2px solid var(--blue); z-index: -1; pointer-events: none; opacity: 0; }
+    @media (prefers-reduced-motion: no-preference) {
+      .btn-cta {
+        background-image: linear-gradient(105deg, transparent 34%, rgba(255,255,255,.45) 50%, transparent 66%);
+        background-size: 250% 100%; background-repeat: no-repeat; background-position: 160% 0;
+        animation: cta-shine 4.2s cubic-bezier(.45, 0, .55, 1) infinite 1.8s;
+      }
+      .btn-cta::after { animation: cta-ring 2.1s cubic-bezier(.2, .7, .3, 1) infinite 1.8s; }
+      .btn-cta:hover, .btn-cta:focus-visible { animation-play-state: paused; }
+      .btn-cta:hover::after, .btn-cta:focus-visible::after { animation: none; }
+      @keyframes cta-shine { 0% { background-position: 160% 0; } 30%, 100% { background-position: -60% 0; } }
+      @keyframes cta-ring { 0% { inset: 0; opacity: .85; } 100% { inset: -9px -12px; opacity: 0; } }
+    }
+    .btn-ghost { border: 1px solid var(--line); color: var(--ink); background: color-mix(in srgb, var(--bg) 40%, transparent); }
+    .btn-ghost:hover { border-color: var(--ink); }
+
+    /* ---------- Indicateur de chapitre ---------- */
+    .chapter { position: fixed; left: 1rem; bottom: 1rem; z-index: 30; display: flex; align-items: stretch; font-family: 'IBM Plex Mono', monospace; font-size: .7rem; letter-spacing: .06em; text-transform: uppercase; }
+    .chapter .n { display: grid; place-items: center; width: 2.4rem; background: var(--blue); color: #fff; font-size: .8rem; }
+    .chapter .t { display: flex; flex-direction: column; justify-content: center; padding: .5rem .8rem; background: #0b0f17; color: #eef1f6; min-width: 7.5rem; overflow: hidden; }
+    .chapter .t small { color: #ffffff; font-size: .6rem; }
+    .chapter .roll { display: block; transition: transform .6s var(--ease), opacity .6s var(--ease); }
+    .chapter.swap .roll { transform: translateY(110%); opacity: 0; transition: none; }
+    @media (max-width: 640px) { .chapter { display: none; } }
+
+    /* ---------- Révélation des titres mot par mot ---------- */
+    .js [data-split] .w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .1em; margin-bottom: -.1em; }
+    .js [data-split] .wi { display: inline-block; transform: translateY(108%); transition: transform 1.15s var(--ease); transition-delay: calc(var(--i) * 45ms); }
+    .js [data-split].in .wi { transform: none; }
+    .js [data-fade] { opacity: 0; transform: translateY(14px); transition: opacity 1s var(--ease), transform 1s var(--ease); transition-delay: var(--d, 0ms); }
+    .js [data-fade].in { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) {
+      .js [data-split] .wi, .js [data-fade] { transform: none !important; opacity: 1 !important; transition: none !important; }
+    }
+
+    /* ---------- Cartes ---------- */
+    .panel-card { background: var(--surface); border: 1px solid var(--line); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-radius: 4px; }
+    .exhibit.is-leaving { opacity: 0 !important; transform: translateY(8px) !important; }
+    .xpanel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .5s var(--ease); }
+    .xpanel[data-open="true"] { grid-template-rows: 1fr; }
+    .xpanel > div { overflow: hidden; }
+    .tag { border: 1px solid var(--line); padding: .5rem .7rem; line-height: 1; font-family: 'IBM Plex Mono', monospace; font-size: .72rem; color: var(--muted); border-radius: 2px; }
+    .filter-btn { border: 1px solid var(--line); padding: .55rem 1rem; font-size: .85rem; color: var(--muted); border-radius: 999px; transition: all .3s var(--ease); }
+    .filter-btn:hover { color: var(--ink); border-color: var(--ink); }
+    .filter-btn[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: #fff; }
+    html.all-dark .filter-btn[aria-pressed="true"] { color: #0b0f17; }
+
+    .field { display: block; width: 100%; margin-top: .4rem; padding: .7rem .8rem; font-size: 1rem; color: var(--ink); background: var(--field); border: 1px solid var(--line); border-radius: 3px; }
+    .field:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent); }
+    .field[aria-invalid="true"] { border-color: var(--danger); }
+    .field-err { margin-top: .35rem; font-size: .85rem; color: var(--danger); }
+
+    .role-card { position: relative; overflow: hidden; }
+    .role-card::before { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .55; }
+    .role-blue::before { background: radial-gradient(circle at 0% 0%, rgba(70, 110, 255, .55), transparent 55%); }
+    .role-teal::before { background: radial-gradient(circle at 0% 0%, rgba(96, 200, 190, .45), transparent 55%); }
+    .role-card > * { position: relative; }
+    .pill { display: inline-block; padding: .5rem .85rem; line-height: 1.1; border-radius: 999px; font-size: .78rem; font-weight: 500; border: 1px solid var(--line); white-space: nowrap; }
+    .pill-open { background: #e3f4ea; color: #145c33; border-color: #b9e2c8; }
+    .pill-soon { background: #e4ecff; color: #1f45b8; border-color: #c4d4ff; }
+    .pill-tbc { background: transparent; color: var(--muted); }
+    html.all-dark .pill-open { background: rgba(60,180,110,.15); color: #8fe0b0; border-color: rgba(60,180,110,.35); }
+    html.all-dark .pill-soon { background: rgba(90,130,255,.15); color: #a9c0ff; border-color: rgba(90,130,255,.35); }
+    .no-webgl #scene { display: none; }
+
+    /* ---------- Bloc de code (étude de cas) ---------- */
+    .code { margin: 0; padding: 1.4rem 1.5rem; overflow-x: auto; background: #0b0f17; color: #f5f8ff; border: 1px solid rgba(255,255,255,.08); border-radius: 4px; font-family: 'IBM Plex Mono', monospace; font-size: .8rem; line-height: 1.7; tab-size: 2; scrollbar-color: #2a3344 #0b0f17; }
+    .code .k { color: #7aa2ff; }
+    .code .c { color: #ffffff; }
+    .code ::selection { background: var(--blue); color: #fff; }
+
+    /* Étude de cas : la taille suit l'importance de l'information */
+    .cs-h3    { font-size: 1.75rem; line-height: 1.15; font-weight: 500; letter-spacing: -0.02em; }
+    .cs-key   { font-size: 1.35rem; line-height: 1.4; font-weight: 600; letter-spacing: -0.01em; color: var(--ink); }
+    .cs-body  { font-size: 1.0625rem; line-height: 1.65; color: var(--ink); }
+    .cs-note  { font-size: .9375rem; line-height: 1.6; color: var(--muted); }
+    .cs-label { font-family: 'IBM Plex Mono', monospace; font-size: .78rem; letter-spacing: .02em; color: var(--accent); }
+    .cs-value { font-size: 1.2rem; font-weight: 600; color: var(--accent); }
+    .cs-value small { font-size: .85rem; font-weight: 400; color: var(--ink); }
+    .cs-question { font-size: clamp(1.4rem, 2.4vw, 1.9rem); line-height: 1.3; font-weight: 500; letter-spacing: -0.015em; color: var(--ink); max-width: 34rem; }
+    .cs-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; padding-bottom: 1.25rem; margin-bottom: 2rem; border-bottom: 1px solid var(--line); }
+    .cs-tabs { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .cs-tab { display: inline-flex; align-items: center; gap: .55rem; padding: .6rem 1rem; border: 1px solid var(--line); border-radius: 999px; font-size: .92rem; font-weight: 500; color: var(--ink); transition: background-color .3s var(--ease), border-color .3s, color .3s; }
+    .cs-tab .num { display: inline-grid; place-items: center; width: 1.4rem; height: 1.4rem; border-radius: 999px; font-family: 'IBM Plex Mono', monospace; font-size: .72rem; border: 1px solid currentColor; }
+    .cs-tab:hover { border-color: var(--ink); }
+    .cs-tab[aria-selected="true"] { background: var(--blue); border-color: var(--blue); color: #fff; }
+    .cs-count { font-family: 'IBM Plex Mono', monospace; font-size: .85rem; color: var(--ink); }
+    .cs-nav { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .75rem; margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+    .cs-btn { display: inline-flex; align-items: center; gap: .6rem; padding: .85rem 1.2rem; font-size: .92rem; font-weight: 500; border: 1px solid var(--line); border-radius: 3px; color: var(--ink); transition: border-color .3s; }
+    .cs-btn:hover:not(:disabled) { border-color: var(--ink); }
+    .cs-btn:disabled { visibility: hidden; }
+    @media (max-width: 640px) { .cs-count { order: -1; width: 100%; } .cs-btn:disabled { display: none; } }
+    .cs-slide:not([hidden]) { animation: cs-in .55s var(--ease); }
+    @keyframes cs-in { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { .cs-slide:not([hidden]) { animation: none; } }
+  </style>
+</head>
+
+<body class="font-sans antialiased">
+  <div id="bg" aria-hidden="true"><div id="glow"></div></div>
+  <canvas id="scene" aria-hidden="true"></canvas>
+
+  <a href="#contenu" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:bg-white focus:px-4 focus:py-2 focus:text-black">Aller au contenu</a>
+
+  <!-- En-tête -->
+  <header class="hdr">
+    <div class="relative mx-auto flex max-w-page items-center justify-between gap-4 px-4 py-4 sm:px-8">
+      <a href="#top" class="text-[1.05rem] font-semibold tracking-[0.02em]">JOSEPH HALLÉ</a>
+      <nav aria-label="Navigation principale" class="hidden lg:block">
+        <ul class="flex items-center gap-7">
+          <li><a class="navlink" href="#approche">Approche <span class="plus" aria-hidden="true"><svg width="8" height="8" viewBox="0 0 8 8" stroke="currentColor" stroke-width="1.2"><path d="M4 0v8M0 4h8"/></svg></span></a></li>
+          <li><a class="navlink" href="#roles">Rôles <span class="plus" aria-hidden="true"><svg width="8" height="8" viewBox="0 0 8 8" stroke="currentColor" stroke-width="1.2"><path d="M4 0v8M0 4h8"/></svg></span></a></li>
+          <li><a class="navlink" href="#projets">Projets <span class="plus" aria-hidden="true"><svg width="8" height="8" viewBox="0 0 8 8" stroke="currentColor" stroke-width="1.2"><path d="M4 0v8M0 4h8"/></svg></span></a></li>
+          <li><a class="navlink" href="#etude-de-cas">Étude de cas <span class="plus" aria-hidden="true"><svg width="8" height="8" viewBox="0 0 8 8" stroke="currentColor" stroke-width="1.2"><path d="M4 0v8M0 4h8"/></svg></span></a></li>
+          <li><a class="navlink" href="#hackathons">Hackathons <span class="plus" aria-hidden="true"><svg width="8" height="8" viewBox="0 0 8 8" stroke="currentColor" stroke-width="1.2"><path d="M4 0v8M0 4h8"/></svg></span></a></li>
+          <li><a class="navlink" href="#competences">Compétences <span class="plus" aria-hidden="true"><svg width="8" height="8" viewBox="0 0 8 8" stroke="currentColor" stroke-width="1.2"><path d="M4 0v8M0 4h8"/></svg></span></a></li>
+        </ul>
+      </nav>
+      <div class="flex items-center gap-2">
+        <button id="theme-toggle" type="button" class="icon-btn" aria-pressed="false" aria-label="Passer en sombre partout">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16Z" fill="currentColor"/></svg>
+        </button>
+        <a href="#contact" class="btn btn-blue btn-cta hidden !py-2 sm:inline-flex">Me contacter<svg class="cta-arrow h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <button id="menu-toggle" type="button" class="icon-btn lg:hidden" aria-expanded="false" aria-controls="menu-mobile" aria-label="Ouvrir le menu">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+    <nav id="menu-mobile" aria-label="Navigation mobile" class="relative hidden border-t border-white/10 bg-[#0b0f17] text-[#eef1f6] lg:hidden">
+      <ul class="flex flex-col px-4 py-2 text-lg">
+        <li><a class="block py-2.5" href="#approche">Approche</a></li>
+        <li><a class="block py-2.5" href="#roles">Rôles</a></li>
+        <li><a class="block py-2.5" href="#methode">Méthode</a></li>
+        <li><a class="block py-2.5" href="#projets">Projets</a></li>
+        <li><a class="block py-2.5" href="#etude-de-cas">Étude de cas</a></li>
+        <li><a class="block py-2.5" href="#hackathons">Hackathons</a></li>
+        <li><a class="block py-2.5" href="#competences">Compétences</a></li>
+        <li><a class="block py-2.5" href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="chapter" id="chapter" aria-hidden="true">
+    <span class="n num" id="chapter-n">00</span>
+    <span class="t"><small>Chapitre</small><span class="roll" id="chapter-t">Accueil</span></span>
+  </div>
+
+  <main id="contenu">
+    <!-- 00 · Accueil -->
+    <section id="top" class="tone-dark flex min-h-[100svh] flex-col justify-end" data-stage="0" data-light="0" data-chapter="Accueil">
+      <div class="mx-auto grid w-full max-w-page gap-10 px-4 pb-16 pt-32 sm:px-8 lg:grid-cols-[1.5fr_1fr] lg:items-end lg:pb-20">
+        <div>
+          <p class="text-base text-muted sm:text-lg" data-fade>Joseph Hallé · Futur consultant Data &amp; IA</p>
+          <h1 class="mt-4 text-[clamp(2.7rem,7.4vw,6rem)] font-normal leading-[1.02] tracking-[-0.035em]" data-split data-split-now>
+            Du diagnostic chiffré à l'IA <span class="text-accent">adoptée.</span>
+          </h1>
+        </div>
+        <div class="lg:pb-3">
+          <p class="max-w-[30rem] leading-relaxed text-muted" data-fade style="--d:350ms">
+            Étudiant en Bachelor Data, Applied AI &amp; Business à Eugenia School, je cherche un stage de
+            <span class="text-ink">consultant Data &amp; IA</span>, en Product Owner ou chef de projet, pour juin, juillet et août 2027.
+          </p>
+          <div class="mt-7 flex flex-wrap items-center gap-2" data-fade style="--d:500ms">
+            <a href="#projets" class="btn btn-blue">Explorer mes projets
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+            <a href="cv-joseph-halle.pdf" download="CV-Joseph-Halle.pdf" class="btn btn-ghost">Télécharger mon CV <span class="font-mono text-xs text-muted">PDF</span></a>
+          </div>
+          <div class="mt-4 flex gap-5 text-sm" data-fade style="--d:600ms">
+            <a href="#contact" class="underline hover:text-accent">Me contacter</a>
+            <a href="https://github.com/josephhalle-dev" target="_blank" rel="noopener" class="underline hover:text-accent">GitHub</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Respiration : les tuiles passent de la rangée à l'anneau -->
+    <section class="tone-dark h-[90vh]" data-stage="1" data-light="0" aria-hidden="true"></section>
+
+    <!-- 01 · Approche -->
+    <section id="approche" class="tone-dark flex min-h-[100vh] items-center" data-stage="2" data-light="0" data-chapter="Approche">
+      <div class="mx-auto w-full max-w-[52rem] px-4 py-28 text-center sm:px-8">
+        <h2 class="text-[clamp(2.1rem,5.2vw,3.75rem)] font-normal leading-[1.05] tracking-[-0.03em]" data-split>
+          Quinze ans de compétition. Une progression coup par coup.
+        </h2>
+        <p class="mx-auto mt-7 max-w-[38rem] text-lg leading-relaxed text-muted" data-fade>
+          La compétition apprend à analyser sa performance, corriger un détail et recommencer. J'aborde la technique
+          de la même façon, et le conseil aussi&nbsp;: diagnostic global d'abord, levier ensuite, et chaque recommandation
+          ramenée à ce qu'elle rapporte ou coûte.
+        </p>
+        <dl class="mx-auto mt-14 grid max-w-[38rem] grid-cols-2 gap-px overflow-hidden rounded border border-line bg-[var(--line)] text-left sm:grid-cols-3" data-fade>
+          <div class="bg-[var(--cell)] p-4"><dt class="font-mono text-[.7rem] uppercase tracking-wider text-muted">École</dt><dd class="mt-1 text-sm">Eugenia School, Paris</dd></div>
+          <div class="bg-[var(--cell)] p-4"><dt class="font-mono text-[.7rem] uppercase tracking-wider text-muted">Formation</dt><dd class="mt-1 text-sm">Bachelor Data, Applied AI &amp; Business</dd></div>
+          <div class="bg-[var(--cell)] p-4"><dt class="font-mono text-[.7rem] uppercase tracking-wider text-muted">Disponible</dt><dd class="mt-1 text-sm">Juin à août <span class="num">2027</span></dd></div>
+          <div class="bg-[var(--cell)] p-4"><dt class="font-mono text-[.7rem] uppercase tracking-wider text-muted">Sport</dt><dd class="mt-1 text-sm"><span class="num">15</span> ans en compétition</dd></div>
+          <div class="bg-[var(--cell)] p-4"><dt class="font-mono text-[.7rem] uppercase tracking-wider text-muted">Langues</dt><dd class="mt-1 text-sm">Français, anglais C1</dd></div>
+          <div class="bg-[var(--cell)] p-4"><dt class="font-mono text-[.7rem] uppercase tracking-wider text-muted">Basé à</dt><dd class="mt-1 text-sm">Neuilly-sur-Seine</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- Manifeste : les mots s'allument au défilement -->
+    <section class="tone-dark" data-stage="2.5" data-light="0">
+      <div class="mx-auto max-w-[60rem] px-4 py-[22vh] sm:px-8">
+        <p class="text-[clamp(1.8rem,4.2vw,3.4rem)] font-normal leading-[1.15] tracking-[-0.025em]" data-scrub>
+          Un modèle qui reste dans un notebook ne transforme rien. Un outil que l'équipe ouvre chaque lundi matin, si.
+        </p>
+      </div>
+    </section>
+
+    <!-- 02 · Rôles visés -->
+    <section id="roles" class="tone-dark" data-stage="2.8" data-light="0" data-chapter="Rôles">
+      <div class="mx-auto max-w-page px-4 py-28 sm:px-8">
+        <div class="grid gap-6 lg:grid-cols-[1.3fr_1fr] lg:items-end">
+          <h2 class="text-[clamp(2.1rem,4.8vw,3.9rem)] font-normal leading-[1.05] tracking-[-0.03em]" data-split>
+            Deux rôles visés en conseil Data &amp; IA.
+          </h2>
+          <p class="max-w-[30rem] leading-relaxed text-muted" data-fade>
+            Côté produit ou côté projet, le même objectif&nbsp;: qu'un outil data ou IA soit livré, puis vraiment utilisé.
+          </p>
+        </div>
+        <div class="mt-14 grid gap-4 lg:grid-cols-2">
+          <article class="role-card role-blue panel-card flex min-h-[24rem] flex-col p-7 sm:p-10" data-fade>
+            <h3 class="mt-auto text-[clamp(1.75rem,3vw,2.5rem)] font-medium leading-[1.1] tracking-[-0.02em]">Consultant Product Owner Data/IA</h3>
+            <p class="mt-5 max-w-[34rem] text-lg leading-relaxed text-muted">Je transforme un besoin métier en produit data ou IA qui sert&nbsp;: backlog priorisé, critères d'acceptation, puis mesure de l'usage une fois en production.</p>
+            <p class="mt-6 text-sm text-muted">Déjà pratiqué sur <a href="#projet-teckels" class="text-accent underline">Le Bar à Teckels</a> et <a href="#projet-boring" class="text-accent underline">BORING</a></p>
+          </article>
+          <article class="role-card role-teal panel-card flex min-h-[24rem] flex-col p-7 sm:p-10" data-fade style="--d:120ms">
+            <h3 class="mt-auto text-[clamp(1.75rem,3vw,2.5rem)] font-medium leading-[1.1] tracking-[-0.02em]">Consultant Project Manager Data/IA</h3>
+            <p class="mt-5 max-w-[34rem] text-lg leading-relaxed text-muted">Je tiens le cap d'un projet data ou IA&nbsp;: planning, qualité des livrables, et adhésion des équipes qui vont s'en servir.</p>
+            <p class="mt-6 text-sm text-muted">Déjà pratiqué sur <a href="#projet-abotis" class="text-accent underline">Abotis</a> et <a href="#projet-hackathons" class="text-accent underline">les hackathons</a></p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 · Méthode -->
+    <section id="methode" class="tone-dark min-h-[100vh]" data-stage="3" data-light="0" data-chapter="Méthode">
+      <div class="mx-auto max-w-page px-4 py-28 sm:px-8">
+        <div class="grid gap-6 lg:grid-cols-[1.3fr_1fr] lg:items-end">
+          <h2 class="text-[clamp(2.1rem,4.8vw,3.9rem)] font-normal leading-[1.05] tracking-[-0.03em]" data-split>
+            Sur le terrain pour la question. En coulisses pour la réponse.
+          </h2>
+          <p class="max-w-[30rem] leading-relaxed text-muted" data-fade>
+            Je fais le lien entre les équipes qui ont le besoin et les données qui y répondent, avec la méthode de cadrage
+            QCOR apprise à Eugenia School.
+          </p>
+        </div>
+        <ol class="mt-16 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <li class="panel-card flex min-h-[15rem] flex-col p-6" data-fade style="--d:0ms">
+            <span class="text-6xl font-light text-accent">Q</span>
+            <h3 class="mt-auto pt-10 text-xl font-medium">Question métier</h3>
+            <p class="mt-2 text-sm leading-relaxed text-muted">Ce que l'équipe cherche vraiment à décider, formulé avec elle.</p>
+          </li>
+          <li class="panel-card flex min-h-[15rem] flex-col p-6" data-fade style="--d:90ms">
+            <span class="text-6xl font-light text-accent">C</span>
+            <h3 class="mt-auto pt-10 text-xl font-medium">Concept</h3>
+            <p class="mt-2 text-sm leading-relaxed text-muted">L'indicateur ou le mécanisme qui permet d'y répondre.</p>
+          </li>
+          <li class="panel-card flex min-h-[15rem] flex-col p-6" data-fade style="--d:180ms">
+            <span class="text-6xl font-light text-accent">O</span>
+            <h3 class="mt-auto pt-10 text-xl font-medium">Outil data</h3>
+            <p class="mt-2 text-sm leading-relaxed text-muted">SQL, Python, Power BI, ou un agent LLM quand c'est le bon outil.</p>
+          </li>
+          <li class="panel-card flex min-h-[15rem] flex-col p-6" data-fade style="--d:270ms">
+            <span class="text-6xl font-light text-accent">R</span>
+            <h3 class="mt-auto pt-10 text-xl font-medium">Réponse chiffrée</h3>
+            <p class="mt-2 text-sm leading-relaxed text-muted">Une recommandation qu'un dirigeant peut arbitrer en une page.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- 03 · Projets -->
+    <section id="projets" class="tone-light" data-stage="4" data-light="1" data-chapter="Projets">
+      <div class="mx-auto max-w-page px-4 py-28 sm:px-8">
+        <div class="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+          <h2 class="max-w-[44rem] text-[clamp(2.1rem,4.8vw,3.9rem)] font-normal leading-[1.05] tracking-[-0.03em]" data-split>
+            Six projets, du cas d'école à la mission client.
+          </h2>
+          <div role="group" aria-label="Filtrer les projets" class="flex flex-wrap gap-2" id="filters">
+            <button type="button" data-filter="tous" aria-pressed="true" class="filter-btn">Tous</button>
+            <button type="button" data-filter="academique" aria-pressed="false" class="filter-btn">Académique &amp; hackathons</button>
+            <button type="button" data-filter="ia" aria-pressed="false" class="filter-btn">IA &amp; automatisation</button>
+            <button type="button" data-filter="interfaces" aria-pressed="false" class="filter-btn">Interfaces &amp; plateformes</button>
+          </div>
+        </div>
+        <p class="sr-only" aria-live="polite" id="filter-status"></p>
+        <div id="exhibits" class="mt-12 grid items-start gap-4 md:grid-cols-2"></div>
+      </div>
+    </section>
+
+    <!-- Étude de cas · Maisons du Monde -->
+    <section id="etude-de-cas" class="tone-light" data-stage="4" data-light="1" data-chapter="Étude de cas">
+      <div class="mx-auto max-w-page px-4 pb-16 pt-12 sm:px-8">
+        <h2 class="text-[clamp(2.4rem,6vw,4.8rem)] font-normal leading-[1.02] tracking-[-0.035em]" data-split>
+          Étude de cas&nbsp;: Maisons du Monde
+        </h2>
+        <div class="mt-8 grid gap-6 lg:grid-cols-[1.3fr_1fr] lg:items-end" data-fade>
+          <p class="cs-question">L'enseigne a perdu 28&nbsp;% de ses ventes depuis 2021. Où l'IA peut-elle l'aider à repartir&nbsp;?</p>
+          <p class="cs-body max-w-[30rem]">Étude personnelle menée en novembre&nbsp;2026, uniquement à partir de données publiques&nbsp;: comptes officiels 2020-2026 et Google Trends. Sans lien avec l'entreprise.</p>
+        </div>
+
+        <div class="cs-carousel mt-12" id="cs-carousel" role="region" aria-roledescription="carrousel" aria-label="Étude de cas en quatre parties" data-fade>
+          <div class="cs-bar">
+            <div role="tablist" aria-label="Parties de l'étude de cas" class="cs-tabs">
+            <button type="button" role="tab" id="cs-tab-cheminement" aria-controls="cs-panel-cheminement" aria-selected="true" tabindex="0" class="cs-tab"><span class="num">1</span>Cheminement</button>
+            <button type="button" role="tab" id="cs-tab-donnees" aria-controls="cs-panel-donnees" aria-selected="false" tabindex="-1" class="cs-tab"><span class="num">2</span>Données</button>
+            <button type="button" role="tab" id="cs-tab-sql" aria-controls="cs-panel-sql" aria-selected="false" tabindex="-1" class="cs-tab"><span class="num">3</span>Requête SQL</button>
+            <button type="button" role="tab" id="cs-tab-recommandation" aria-controls="cs-panel-recommandation" aria-selected="false" tabindex="-1" class="cs-tab"><span class="num">4</span>Recommandation</button>
+            </div>
+          </div>
+
+          <div role="tabpanel" id="cs-panel-cheminement" aria-labelledby="cs-tab-cheminement" class="cs-slide">
+        <!-- Cheminement -->
+        <h3 class="cs-h3">Le cheminement</h3>
+        <ol class="panel-card mt-6 overflow-hidden">
+          <li class="grid gap-2 border-b border-line px-6 py-6 lg:grid-cols-[10rem_1fr] lg:gap-8">
+            <p class="cs-label">1 · Hypothèse</p>
+            <p class="cs-body max-w-[38rem]">Les rapports annuels montrent un site qui recule deux fois plus vite que les magasins. Première lecture&nbsp;: le site attire du monde mais <strong class="font-semibold">convertit mal</strong>.</p>
+          </li>
+          <li class="grid gap-2 border-b border-line px-6 py-6 lg:grid-cols-[10rem_1fr] lg:gap-8">
+            <p class="cs-label">2 · Collecte</p>
+            <div class="max-w-[38rem]">
+              <p class="cs-body">Ventes par canal, nombre de magasins et marge brute, tirés des communiqués officiels (AMF). Intérêt de recherche Google en France de 2016 à 2026 pour Maisons du Monde, IKEA, Conforama et La Redoute.</p>
+              <p class="cs-note mt-2">Écartés&nbsp;: avis Trustpilot (collecte automatique interdite), site de l'enseigne (protégé contre les robots), SignalConso (pas de nom d'entreprise dans les données).</p>
+            </div>
+          </li>
+          <li class="grid gap-2 border-b border-line px-6 py-6 lg:grid-cols-[10rem_1fr] lg:gap-8">
+            <p class="cs-label">3 · Analyse</p>
+            <p class="cs-body max-w-[38rem]">Calculs en <strong class="font-semibold">SQL avec DuckDB</strong>, directement sur les fichiers CSV&nbsp;: évolutions, ventes par magasin, indices base 100 avec des fonctions de fenêtre, corrélations. Graphiques en <strong class="font-semibold">Python</strong> (pandas, matplotlib). Les deux versions ont été recoupées et donnent les mêmes chiffres.</p>
+          </li>
+          <li class="grid gap-2 px-6 py-7 lg:grid-cols-[10rem_1fr] lg:gap-8">
+            <p class="cs-label">4 · Correction</p>
+            <p class="cs-key max-w-[38rem]">Les données ont contredit mon hypothèse&nbsp;: ce n'est pas la conversion qui chute, <span class="text-accent">ce sont les visiteurs qui disparaissent.</span></p>
+          </li>
+        </ol>
+
+          </div>
+          <div role="tabpanel" id="cs-panel-donnees" aria-labelledby="cs-tab-donnees" class="cs-slide" hidden>
+        <!-- Résultats -->
+        <h3 class="cs-h3">Ce que montrent les données</h3>
+        <div class="mt-6 grid gap-4 lg:grid-cols-2">
+          <figure class="panel-card overflow-hidden">
+            <img src="assets/maisons-du-monde/2_marque_vs_ventes.jpg" width="1164" height="725" loading="lazy" class="block h-auto w-full bg-white"
+                 alt="Courbes base 100 en 2021 : l'intérêt Google pour Maisons du Monde tombe à 60 en 2025, les ventes en ligne à 59, les ventes en magasin à 79.">
+            <figcaption class="border-t border-line px-5 py-5">
+              <p class="cs-key">Le site suit la marque.</p>
+              <p class="cs-body mt-1"><span class="num font-semibold">−48&nbsp;%</span> d'intérêt Google et <span class="num font-semibold">−41&nbsp;%</span> de ventes en ligne depuis 2021. Les magasins résistent mieux (<span class="num">−21&nbsp;%</span>).</p>
+            </figcaption>
+          </figure>
+          <figure class="panel-card overflow-hidden">
+            <img src="assets/maisons-du-monde/3_part_de_recherche.jpg" width="1164" height="725" loading="lazy" class="block h-auto w-full bg-white"
+                 alt="Intérêt Google base 100 en 2021 : IKEA à 83 en 2026, Maisons du Monde à 52, Conforama à 50, La Redoute à 39.">
+            <figcaption class="border-t border-line px-5 py-5">
+              <p class="cs-key">Le problème dépasse le site.</p>
+              <p class="cs-body mt-1">Tout le milieu de gamme français décroche, IKEA ne perd que <span class="num font-semibold">17&nbsp;%</span>. C'est la place de la marque qui est en jeu.</p>
+            </figcaption>
+          </figure>
+        </div>
+        <ul class="mt-4 grid gap-x-8 gap-y-3 lg:grid-cols-2">
+          <li class="cs-body border-t border-line pt-3"><span class="num font-semibold">−14&nbsp;%</span> de ventes par magasin, alors que le réseau ne perd que <span class="num">8&nbsp;%</span> de ses magasins&nbsp;: chaque magasin vend moins.</li>
+          <li class="cs-body border-t border-line pt-3">Marge brute de <span class="num">66,5&nbsp;%</span> à <span class="num font-semibold">61,9&nbsp;%</span>, et un intérêt qui varie de <span class="num">×1,7</span> entre mai et décembre&nbsp;: les stocks doivent suivre.</li>
+        </ul>
+
+          </div>
+          <div role="tabpanel" id="cs-panel-sql" aria-labelledby="cs-tab-sql" class="cs-slide" hidden>
+        <!-- Exemple SQL -->
+        <figure class="grid gap-6 lg:grid-cols-[1fr_1.4fr] lg:items-center">
+          <figcaption class="max-w-[30rem]">
+            <h3 class="cs-h3">Une requête, une question</h3>
+            <p class="cs-body mt-3">Le site suit-il vraiment la marque&nbsp;? Je joins l'intérêt Google moyen par an aux ventes officielles, puis je mesure la corrélation.</p>
+            <p class="cs-key mt-4">r = 0,99 avec les ventes en ligne, 0,67 avec les magasins.</p>
+            <p class="cs-note mt-2">Sur six années seulement&nbsp;: c'est un signal, pas une preuve.</p>
+          </figcaption>
+          <pre class="code" tabindex="0" aria-label="Requête SQL de corrélation"><code><span class="c">-- Intérêt Google moyen par an</span>
+<span class="k">WITH</span> interet <span class="k">AS</span> (
+  <span class="k">SELECT</span> year(mois) <span class="k">AS</span> annee,
+         avg(mdm)   <span class="k">AS</span> interet
+  <span class="k">FROM</span> trends <span class="k">GROUP BY</span> 1
+)
+<span class="c">-- Corrélation avec les ventes 2020-2025</span>
+<span class="k">SELECT</span> round(corr(i.interet, f.ventes_en_ligne), 2) <span class="k">AS</span> r_en_ligne,
+       round(corr(i.interet, f.ventes_magasins), 2) <span class="k">AS</span> r_magasins
+<span class="k">FROM</span> interet i <span class="k">JOIN</span> finances f <span class="k">USING</span> (annee);</code></pre>
+        </figure>
+
+          </div>
+          <div role="tabpanel" id="cs-panel-recommandation" aria-labelledby="cs-tab-recommandation" class="cs-slide" hidden>
+        <!-- Conclusion -->
+        <h3 class="cs-h3">Ma recommandation&nbsp;: cinq objectifs IA</h3>
+        <div class="panel-card mt-6 overflow-hidden">
+          <div class="cs-label hidden grid-cols-[1.2fr_1fr_12rem] gap-6 border-b border-line px-6 py-3 uppercase tracking-wider lg:grid">
+            <span>Objectif</span><span>Leviers IA</span><span>Valeur estimée</span>
+          </div>
+          <div class="grid gap-2 border-b border-line px-6 py-5 lg:grid-cols-[1.2fr_1fr_12rem] lg:gap-6">
+            <p class="cs-body font-semibold">Faire revenir les visiteurs&nbsp;: de 12,2&nbsp;% à 14&nbsp;% des recherches face à IKEA, Conforama et La Redoute</p>
+            <p class="cs-note">Contenus d'inspiration générés par IA, fiches produits pensées pour les moteurs de recherche IA, recherche par photo</p>
+            <p class="cs-body">Condition des deux suivants</p>
+          </div>
+          <div class="grid gap-2 border-b border-line px-6 py-5 lg:grid-cols-[1.2fr_1fr_12rem] lg:gap-6">
+            <p class="cs-body font-semibold">Ventes en ligne stables fin 2027, puis +10&nbsp;% en 2028</p>
+            <p class="cs-note">Recommandations personnalisées, visualisation d'un meuble dans sa pièce</p>
+            <p class="cs-value num">+15,7&nbsp;M€ <small>de marge</small></p>
+          </div>
+          <div class="grid gap-2 border-b border-line px-6 py-5 lg:grid-cols-[1.2fr_1fr_12rem] lg:gap-6">
+            <p class="cs-body font-semibold">Ventes par magasin de 2,13 à 2,30&nbsp;M€ en 2028</p>
+            <p class="cs-note">Assistant pour les vendeurs, données du programme de fidélité</p>
+            <p class="cs-value num">≈ +35&nbsp;M€ <small>de marge</small></p>
+          </div>
+          <div class="grid gap-2 border-b border-line px-6 py-5 lg:grid-cols-[1.2fr_1fr_12rem] lg:gap-6">
+            <p class="cs-body font-semibold">Marge brute remontée à 63,5&nbsp;% en 2027</p>
+            <p class="cs-note">Démarques optimisées par produit et par magasin, promotions ciblées</p>
+            <p class="cs-value num">+15&nbsp;M€ <small>de marge</small></p>
+          </div>
+          <div class="grid gap-2 px-6 py-5 lg:grid-cols-[1.2fr_1fr_12rem] lg:gap-6">
+            <p class="cs-body font-semibold">Moins de ruptures de stock de novembre à janvier</p>
+            <p class="cs-note">Prévision de la demande par produit et par magasin</p>
+            <p class="cs-note">À chiffrer avec les données internes</p>
+          </div>
+        </div>
+        <div class="mt-8 max-w-[44rem]">
+          <p class="cs-key">Plafond théorique&nbsp;: <span class="text-accent">environ 66&nbsp;M€ de marge brute par an</span>, face à 36,8&nbsp;M€ de perte d'exploitation au 1<sup>er</sup>&nbsp;semestre 2026.</p>
+          <p class="cs-body mt-3">Je lancerais d'abord la marge et les stocks, qui rapportent vite, puis le retour des visiteurs.</p>
+        </div>
+          </div>
+
+          <div class="cs-nav">
+            <button type="button" class="cs-btn" id="cs-prev" disabled>
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+              Précédent
+            </button>
+            <p class="cs-count num" aria-live="polite">Partie <span id="cs-count">1</span>&nbsp;/&nbsp;4</p>
+            <button type="button" class="btn btn-blue" id="cs-next">
+              <span>Suivant&nbsp;: <span id="cs-next-label">Données</span></span>
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <script>
+        (function () {
+          var root = document.getElementById('cs-carousel');
+          var tabs = [].slice.call(root.querySelectorAll('[role="tab"]'));
+          var panels = tabs.map(function (t) { return document.getElementById(t.getAttribute('aria-controls')); });
+          var prev = document.getElementById('cs-prev'), next = document.getElementById('cs-next');
+          var nextLabel = document.getElementById('cs-next-label'), count = document.getElementById('cs-count');
+          var names = tabs.map(function (t) { return t.textContent.replace(/^\d+/, '').trim(); });
+          var current = 0;
+          function show(i, focusTab) {
+            if (i < 0 || i >= tabs.length || i === current) return;
+            tabs.forEach(function (t, k) { var on = k === i; t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1; panels[k].hidden = !on; });
+            current = i;
+            count.textContent = i + 1;
+            prev.disabled = i === 0;
+            next.hidden = i === tabs.length - 1;
+            if (i < tabs.length - 1) nextLabel.textContent = names[i + 1];
+            if (focusTab) tabs[i].focus();
+            // garder le haut du carrousel visible quand la partie change
+            var top = root.getBoundingClientRect().top;
+            if (top < 0) {
+              if (window.__lenis) window.__lenis.scrollTo(root, { offset: -90, duration: 0.9 });
+              else root.scrollIntoView({ block: 'start' });
+            }
+            window.dispatchEvent(new Event('resize')); // la hauteur de la section a changé
+          }
+          tabs.forEach(function (t, k) { t.addEventListener('click', function () { show(k); }); });
+          root.querySelector('[role="tablist"]').addEventListener('keydown', function (e) {
+            if (e.key === 'ArrowRight') { e.preventDefault(); show((current + 1) % tabs.length, true); }
+            if (e.key === 'ArrowLeft') { e.preventDefault(); show((current - 1 + tabs.length) % tabs.length, true); }
+          });
+          prev.addEventListener('click', function () { show(current - 1); });
+          next.addEventListener('click', function () { show(current + 1); });
+        })();
+      </script>
+    </section>
+
+    <!-- 05 · Hackathons -->
+    <section id="hackathons" class="tone-light" data-stage="4" data-light="1" data-chapter="Hackathons">
+      <div class="mx-auto max-w-page px-4 pb-16 pt-12 sm:px-8">
+        <div class="grid gap-6 lg:grid-cols-[1.3fr_1fr] lg:items-end">
+          <h2 class="text-[clamp(2.1rem,4.8vw,3.9rem)] font-normal leading-[1.05] tracking-[-0.03em]" data-split>
+            Quatre hackathons en 2027.
+          </h2>
+          <p class="max-w-[30rem] leading-relaxed text-muted" data-fade>
+            Choisis pour m'entraîner aux deux rôles&nbsp;: cadrer un cas d'usage, livrer un prototype, le défendre devant un jury.
+            Informations vérifiées le 16&nbsp;novembre&nbsp;2026 sur les pages des organisateurs.
+          </p>
+        </div>
+        <ol class="panel-card mt-12 overflow-hidden">
+          <li class="grid gap-2 border-b border-line px-6 py-6 lg:grid-cols-[10rem_1fr_15rem] lg:gap-8" data-fade>
+            <p class="font-mono text-sm text-accent">Janv. à déc. 2027</p>
+            <div>
+              <h3 class="text-[1.35rem] font-medium tracking-tight">Challenge Data 2027</h3>
+              <p class="mt-1 text-sm text-muted">ENS Paris, Collège de France, Institut Louis Bachelier · en ligne · Modélisation</p>
+              <p class="mt-3 max-w-[40rem] leading-relaxed">Une dizaine de défis sur données réelles d'entreprises, de janvier à décembre, pour muscler la partie quantitative.</p>
+            </div>
+            <div class="flex flex-row flex-wrap items-center gap-3 lg:flex-col lg:items-end lg:text-right">
+              <span class="pill pill-soon">Lancement en janvier 2027</span>
+              <a href="https://challengedata.ens.fr" target="_blank" rel="noopener" class="text-sm text-accent underline">Page officielle</a>
+            </div>
+          </li>
+          <li class="grid gap-2 border-b border-line px-6 py-6 lg:grid-cols-[10rem_1fr_15rem] lg:gap-8" data-fade>
+            <p class="font-mono text-sm text-accent">2027</p>
+            <div>
+              <h3 class="text-[1.35rem] font-medium tracking-tight">L'Oréal Brandstorm 2027</h3>
+              <p class="mt-1 text-sm text-muted">L'Oréal · équipes de trois, 18 à 30 ans · Innovation business</p>
+              <p class="mt-3 max-w-[40rem] leading-relaxed">Défendre une stratégie d'innovation devant une grande entreprise, en équipe.</p>
+            </div>
+            <div class="flex flex-row flex-wrap items-center gap-3 lg:flex-col lg:items-end lg:text-right">
+              <span class="pill pill-open">Inscriptions ouvertes, thème à paraître</span>
+              <a href="https://www.loreal.com/fr/brandstorm/" target="_blank" rel="noopener" class="text-sm text-accent underline">Page officielle</a>
+            </div>
+          </li>
+          <li class="grid gap-2 border-b border-line px-6 py-6 lg:grid-cols-[10rem_1fr_15rem] lg:gap-8" data-fade>
+            <p class="font-mono text-sm text-accent">Début 2027</p>
+            <div>
+              <h3 class="text-[1.35rem] font-medium tracking-tight">Mistral AI Hackathon</h3>
+              <p class="mt-1 text-sm text-muted">Mistral AI · Paris · IA générative</p>
+              <p class="mt-3 max-w-[40rem] leading-relaxed">Édition 2026 du 28 février au 1er mars. Aucune édition 2027 annoncée pour l'instant.</p>
+            </div>
+            <div class="flex flex-row flex-wrap items-center gap-3 lg:flex-col lg:items-end lg:text-right">
+              <span class="pill pill-tbc">Non annoncé</span>
+              <span class="text-sm text-muted">Pas encore de page</span>
+            </div>
+          </li>
+          <li class="grid gap-2 border-b border-line px-6 py-6 lg:grid-cols-[10rem_1fr_15rem] lg:gap-8" data-fade>
+            <p class="font-mono text-sm text-accent">Juil. 2027</p>
+            <div>
+              <h3 class="text-[1.35rem] font-medium tracking-tight">RAISE Hackathon</h3>
+              <p class="mt-1 text-sm text-muted">RAISE Summit · Paris · Sprint IA de 24 h</p>
+              <p class="mt-3 max-w-[40rem] leading-relaxed">Construire une démo IA en 24 h et la pitcher pendant le RAISE Summit (6-8 juillet 2027, Palais des Congrès).</p>
+            </div>
+            <div class="flex flex-row flex-wrap items-center gap-3 lg:flex-col lg:items-end lg:text-right">
+              <span class="pill pill-tbc">Date du hackathon à confirmer</span>
+              <a href="https://www.raisesummit.com/hackathon" target="_blank" rel="noopener" class="text-sm text-accent underline">Page officielle</a>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- 06 · Compétences -->
+    <section id="competences" class="tone-light" data-stage="5" data-light="1" data-chapter="Compétences">
+      <div class="mx-auto max-w-page px-4 pb-32 pt-12 sm:px-8">
+        <div class="grid gap-6 lg:grid-cols-[1.3fr_1fr] lg:items-end">
+          <h2 class="text-[clamp(2.1rem,4.8vw,3.9rem)] font-normal leading-[1.05] tracking-[-0.03em]" data-split>
+            Trois domaines, chacun prouvé par un projet.
+          </h2>
+          <p class="max-w-[30rem] leading-relaxed text-muted" data-fade>Pour chaque domaine&nbsp;: ce que je fais, avec quels outils, et où vous pouvez le vérifier.</p>
+        </div>
+
+        <div class="panel-card mt-12 overflow-hidden" data-fade>
+          <div class="hidden grid-cols-[14rem_1fr_1fr_12rem] gap-6 border-b border-line px-6 py-3 font-mono text-[.7rem] uppercase tracking-wider text-muted lg:grid">
+            <span>Domaine</span><span>Ce que je fais</span><span>Outils</span><span>Preuve</span>
+          </div>
+          <div class="grid gap-3 border-b border-line px-6 py-7 lg:grid-cols-[14rem_1fr_1fr_12rem] lg:gap-6">
+            <h3 class="text-xl font-medium">Stratégie &amp; finance</h3>
+            <ul class="space-y-1 text-sm leading-relaxed"><li>Analyse de rentabilité</li><li>Business planning</li><li>KPIs de performance</li><li>Diagnostic d'opportunités de marché</li></ul>
+            <p class="text-sm leading-relaxed text-muted">Excel et Google Sheets avancés (TCD, formules dynamiques), synthèse PowerPoint</p>
+            <a href="#projet-abotis" class="text-sm text-accent underline">Simulateur de ROI Abotis</a>
+          </div>
+          <div class="grid gap-3 border-b border-line px-6 py-7 lg:grid-cols-[14rem_1fr_1fr_12rem] lg:gap-6">
+            <h3 class="text-xl font-medium">IA &amp; outils</h3>
+            <ul class="space-y-1 text-sm leading-relaxed"><li>Intégration d'APIs de LLM</li><li>Automatisation de workflows</li><li>Prototypage d'IA générative</li><li>Acculturation et adoption métier</li></ul>
+            <p class="text-sm leading-relaxed text-muted">APIs LLM, prompt engineering, Make, Zapier, web scraping</p>
+            <a href="#projet-hackathons" class="text-sm text-accent underline">Géniathons et hackathons</a>
+          </div>
+          <div class="grid gap-3 border-b border-line px-6 py-7 lg:grid-cols-[14rem_1fr_1fr_12rem] lg:gap-6">
+            <h3 class="text-xl font-medium">Pilotage produit &amp; projet</h3>
+            <ul class="space-y-1 text-sm leading-relaxed"><li>Cadrage de besoins</li><li>Priorisation</li><li>Travail en équipe agile</li><li>Vulgarisation technique</li></ul>
+            <p class="text-sm leading-relaxed text-muted">Méthode QCOR, synthèse PowerPoint</p>
+            <a href="#projet-abotis" class="text-sm text-accent underline">Mission client Abotis</a>
+          </div>
+          <div class="grid gap-3 px-6 py-7 lg:grid-cols-[14rem_1fr_1fr_12rem] lg:gap-6">
+            <h3 class="text-xl font-medium">Données &amp; quantitatif</h3>
+            <ul class="space-y-1 text-sm leading-relaxed"><li>Manipulation de données chiffrées</li><li>Analyse exploratoire</li><li>Dashboards de pilotage</li><li>Restitution exécutive</li></ul>
+            <p class="text-sm leading-relaxed text-muted">Python (Pandas, NumPy), SQL, Power BI, modélisation relationnelle</p>
+            <a href="#projet-dashboard" class="text-sm text-accent underline">Dashboard d'adoption SaaS</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05 · Contact -->
+    <section id="contact" class="tone-dark flex min-h-[100vh] items-center" data-stage="6" data-light="0" data-chapter="Contact">
+      <div class="mx-auto grid w-full max-w-page gap-14 px-4 py-28 sm:px-8 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
+        <div>
+          <h2 class="text-[clamp(2.3rem,5.6vw,4.6rem)] font-normal leading-[1.03] tracking-[-0.035em]" data-split>
+            Un stage de consultant Data &amp; IA cet été&nbsp;? <span class="text-accent">Parlons-en.</span>
+          </h2>
+          <ul class="mt-12 max-w-[30rem] border-t border-line text-sm" data-fade>
+            <li class="flex items-center justify-between gap-4 border-b border-line py-4"><span class="text-muted">Email</span><a href="mailto:josephhalle@hotmail.com" class="underline hover:text-accent">josephhalle@hotmail.com</a></li>
+            <li class="flex items-center justify-between gap-4 border-b border-line py-4"><span class="text-muted">LinkedIn</span><a href="https://www.linkedin.com/in/joseph-halle" target="_blank" rel="noopener" class="underline hover:text-accent">in/joseph-halle</a></li>
+            <li class="flex items-center justify-between gap-4 border-b border-line py-4"><span class="text-muted">GitHub</span><a href="https://github.com/josephhalle-dev" target="_blank" rel="noopener" class="underline hover:text-accent">josephhalle-dev</a></li>
+          </ul>
+        </div>
+
+        <form id="contact-form" novalidate class="panel-card self-start p-6 sm:p-8" data-fade>
+          <p class="text-sm text-muted">Ce formulaire ouvre votre messagerie avec le message déjà rédigé.</p>
+          <div class="mt-6 grid gap-5 sm:grid-cols-2">
+            <div>
+              <label for="f-name" class="text-sm font-medium">Nom</label>
+              <input id="f-name" name="name" type="text" autocomplete="name" required aria-describedby="f-name-err" class="field">
+              <p id="f-name-err" class="field-err" hidden>Indiquez votre nom.</p>
+            </div>
+            <div>
+              <label for="f-org" class="text-sm font-medium">Entreprise <span class="font-normal text-muted">(facultatif)</span></label>
+              <input id="f-org" name="org" type="text" autocomplete="organization" class="field">
+            </div>
+          </div>
+          <div class="mt-5">
+            <label for="f-email" class="text-sm font-medium">Email</label>
+            <input id="f-email" name="email" type="email" autocomplete="email" required aria-describedby="f-email-err" class="field">
+            <p id="f-email-err" class="field-err" hidden>Cette adresse email n'est pas valide, vérifiez-la.</p>
+          </div>
+          <div class="mt-5">
+            <label for="f-msg" class="text-sm font-medium">Message</label>
+            <textarea id="f-msg" name="message" rows="5" required aria-describedby="f-msg-err" class="field resize-y"></textarea>
+            <p id="f-msg-err" class="field-err" hidden>Écrivez quelques mots sur votre besoin.</p>
+          </div>
+          <button type="submit" class="btn btn-blue mt-6">Préparer l'email
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+          <p id="form-status" class="mt-4 text-sm text-muted" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="tone-dark border-t border-line" style="color:var(--ink)">
+    <div class="mx-auto flex max-w-page flex-col gap-2 px-4 py-8 text-sm text-muted sm:flex-row sm:justify-between sm:px-8">
+      <p>© <span class="num">2026</span> Joseph Hallé · Neuilly-sur-Seine</p>
+      <p>Scène 3D écrite à la main avec three.js.</p>
+    </div>
+  </footer>
+
+  <!-- =====================  Interface (sans 3D)  ===================== -->
+  <script>
+    (function () {
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var root = document.documentElement;
+
+      // État partagé avec la scène 3D
+      var state = window.sceneState = { stage: 0, light: 0, introStart: performance.now() };
+
+      /* ---------- Défilement amorti (Lenis) ---------- */
+      var lenis = null;
+      if (!reduce && window.Lenis) {
+        lenis = window.__lenis = new Lenis({ lerp: 0.09, wheelMultiplier: 0.95 });
+        (function raf(t) { lenis.raf(t); requestAnimationFrame(raf); })(performance.now());
+      }
+
+      /* ---------- Projets ---------- */
+      var PROJECTS = [
+        { id: 'projet-deepdives', cats: ['academique'], kind: 'Projet d’école · Cas réels', title: 'Business Deep Dives', clients: 'Doctolib, Spendesk, Carrefour',
+          context: 'Des cas métiers réels traités sur données d’entreprise, en retail et en SaaS B2B, avec restitution devant un jury.',
+          approach: 'Nettoyage et exploration des bases en Python (Pandas) et SQL, cadrage QCOR, puis recherche des déterminants d’achat.',
+          impact: 'Des recommandations d’arbitrage commercial chiffrées, présentées en format exécutif sous contrainte de temps.',
+          tags: ['Python', 'Pandas', 'SQL', 'QCOR'] },
+        { id: 'projet-hackathons', cats: ['academique', 'ia'], kind: 'Hackathons · 24 à 48 h', title: 'Géniathons et hackathons Data/IA',
+          context: 'Des sprints en équipe pour lever un point de blocage opérationnel réel, de l’idée au pitch.',
+          approach: 'Prototypes d’automatisation associant des agents LLM et des scénarios Make, testés sur le cas fourni.',
+          impact: 'Faisabilité technique et gain de temps estimé pitchés devant un jury de dirigeants et d’investisseurs.',
+          missing: 'classement ou prix obtenu', tags: ['Agents LLM', 'Make', 'Pitch'] },
+        { id: 'projet-dashboard', cats: ['academique'], kind: 'Pilotage · Rétention', title: 'Dashboard d’adoption produit SaaS',
+          context: 'Une équipe produit doit suivre semaine après semaine l’engagement et le désabonnement de ses utilisateurs.',
+          approach: 'Modélisation sous Power BI des métriques clés d’engagement et de churn, à partir des données d’usage.',
+          impact: 'Des tendances d’usage hebdomadaires lisibles d’un coup d’œil pour décider où agir.',
+          missing: 'nombre de KPI suivis', tags: ['Power BI', 'KPIs', 'Churn'] },
+        { id: 'projet-teckels', cats: ['interfaces', 'ia'], kind: 'Plateforme · Projet en équipe', title: 'Le Bar à Teckels',
+          context: 'Un bar parisien limité à 16 places par créneau doit gérer réservations, boutique en ligne et stock sans surbooking.',
+          approach: 'Réservation en temps réel, boutique, espace client et une cabine d’essayage qui génère par IA des photos de teckels habillés. Base Supabase sécurisée par Row Level Security.',
+          impact: 'Un tableau de bord pro : couverts du jour, taux de remplissage sur 7 jours, CA bar et boutique, alertes de stock, export CSV.',
+          tags: ['Next.js', 'Supabase', 'PostgreSQL', 'IA générative'] },
+        { id: 'projet-abotis', cats: ['interfaces'], kind: 'En cours · Mission client', title: 'Abotis',
+          context: 'Abotis vend et loue en leasing des robots de nettoyage et de service autonomes aux professionnels.',
+          approach: 'Site B2B : catalogue de robots, pages par secteur, offre de leasing, formulaire de contact et design system de la marque.',
+          impact: 'Un simulateur de ROI qui traduit l’achat d’un robot en économie chiffrée pour l’acheteur.',
+          tags: ['Next.js', 'TypeScript', 'Simulateur ROI', 'Design system'] },
+        { id: 'projet-boring', cats: ['interfaces'], kind: 'Application mobile · PWA', title: 'BORING',
+          context: 'On passe d’une stimulation à l’autre sans pause : la tolérance à l’ennui, et donc la concentration, s’effondre.',
+          approach: 'Une app installable avec des sessions d’ennui chronométrées qui verrouillent la navigation, un planning et un suivi par niveau.',
+          impact: 'Un produit pensé de bout en bout, jusqu’au modèle freemium avec l’offre BORING+.',
+          tags: ['HTML/CSS/JS', 'PWA', 'Service Worker', 'Freemium'] }
+      ];
+      var LABELS = { academique: 'Académique & hackathons', ia: 'IA & automatisation', interfaces: 'Interfaces & plateformes' };
+
+      function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+
+      function card(p, i) {
+        var n = String(i + 1).padStart(2, '0'), pid = p.id + '-detail';
+        return '<article id="' + p.id + '" data-cats="' + p.cats.join(' ') + '" class="exhibit panel-card flex flex-col" data-fade style="--d:' + (i % 2) * 90 + 'ms">' +
+          '<div class="flex items-baseline justify-between gap-4 border-b border-line px-6 py-3 font-mono text-[.7rem] uppercase tracking-wider text-muted">' +
+            '<span class="shrink-0"><span class="num text-accent">' + n + '</span><span class="hidden sm:inline"> · Exhibit</span></span><span class="text-right">' + esc(p.kind) + '</span></div>' +
+          '<div class="flex flex-1 flex-col px-6 py-6">' +
+            '<h3 class="text-[1.4rem] font-medium tracking-tight sm:text-[1.75rem]">' + esc(p.title) + '</h3>' +
+            (p.clients ? '<p class="mt-1 text-sm text-muted">' + esc(p.clients) + '</p>' : '') +
+            '<p class="mt-4 leading-relaxed"><span class="font-medium">Contexte.</span> <span class="text-muted">' + esc(p.context) + '</span></p>' +
+            '<div class="xpanel" id="' + pid + '" data-open="false"><div>' +
+              '<p class="mt-4 leading-relaxed"><span class="font-medium">Démarche.</span> <span class="text-muted">' + esc(p.approach) + '</span></p>' +
+              '<p class="mt-4 leading-relaxed"><span class="font-medium text-accent">Impact.</span> <span class="text-muted">' + esc(p.impact) + '</span></p>' +
+              (p.missing ? '<p class="mt-3 text-sm text-danger">[À COMPLÉTER : ' + esc(p.missing) + ']</p>' : '') +
+            '</div></div>' +
+            '<div class="mt-5 flex flex-wrap gap-1.5">' + p.tags.map(function (t) { return '<span class="tag">' + esc(t) + '</span>'; }).join('') + '</div>' +
+            '<button type="button" class="toggle mt-6 inline-flex items-center gap-1.5 self-start text-sm font-medium text-accent hover:underline" aria-expanded="false" aria-controls="' + pid + '">' +
+              '<span>Voir la démarche et l’impact</span><svg class="h-4 w-4 transition-transform duration-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>' +
+          '</div></article>';
+      }
+
+      var grid = document.getElementById('exhibits');
+      grid.innerHTML = PROJECTS.map(card).join('');
+
+      function toggleCard(btn, force) {
+        var panel = document.getElementById(btn.getAttribute('aria-controls'));
+        var open = typeof force === 'boolean' ? force : btn.getAttribute('aria-expanded') !== 'true';
+        btn.setAttribute('aria-expanded', String(open));
+        panel.setAttribute('data-open', String(open));
+        btn.querySelector('span').textContent = open ? 'Masquer le détail' : 'Voir la démarche et l’impact';
+        btn.querySelector('svg').style.transform = open ? 'rotate(180deg)' : '';
+        setTimeout(refresh, 550); // la hauteur de page change
+      }
+      grid.addEventListener('click', function (e) { var b = e.target.closest('.toggle'); if (b) toggleCard(b); });
+
+      /* ---------- Filtre ---------- */
+      var filters = document.getElementById('filters');
+      var status = document.getElementById('filter-status');
+      function applyFilter(f) {
+        var shown = 0;
+        grid.querySelectorAll('.exhibit').forEach(function (c) {
+          var match = f === 'tous' || c.dataset.cats.split(' ').indexOf(f) !== -1;
+          if (match) shown++;
+          if (reduce) { c.hidden = !match; return; }
+          if (!match && !c.hidden) {
+            c.classList.add('is-leaving');
+            setTimeout(function () { c.hidden = true; c.classList.remove('is-leaving'); }, 260);
+          } else if (match && c.hidden) {
+            c.classList.add('is-leaving', 'in'); c.hidden = false;
+            requestAnimationFrame(function () { requestAnimationFrame(function () { c.classList.remove('is-leaving'); }); });
+          }
+        });
+        status.textContent = shown + ' projet' + (shown > 1 ? 's' : '') + ' affiché' + (shown > 1 ? 's' : '') + (f === 'tous' ? '' : ' : ' + LABELS[f]);
+        setTimeout(refresh, 320);
+      }
+      filters.addEventListener('click', function (e) {
+        var b = e.target.closest('[data-filter]'); if (!b) return;
+        filters.querySelectorAll('[data-filter]').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+        applyFilter(b.dataset.filter);
+      });
+
+      /* ---------- Liens internes (avec défilement amorti) ---------- */
+      document.addEventListener('click', function (e) {
+        var a = e.target.closest('a[href^="#"]');
+        if (!a) return;
+        var id = a.getAttribute('href');
+        var target = document.querySelector(id);
+        if (!target) return;
+        if (target.hidden) { filters.querySelector('[data-filter="tous"]').click(); target.hidden = false; }
+        if (target.classList.contains('exhibit')) {
+          target.classList.add('in');
+          var b = target.querySelector('.toggle'); if (b.getAttribute('aria-expanded') !== 'true') toggleCard(b, true);
+        }
+        if (lenis) { e.preventDefault(); lenis.scrollTo(target, { offset: -80, duration: 1.6 }); history.replaceState(null, '', id); }
+        setMenu(false);
+      });
+
+      /* ---------- Titres mot par mot ---------- */
+      function splitWords(el) {
+        var i = 0, walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), nodes = [];
+        while (walker.nextNode()) nodes.push(walker.currentNode);
+        nodes.forEach(function (node) {
+          var frag = document.createDocumentFragment();
+          node.textContent.split(/([ \t\n\r]+)/).forEach(function (part) {
+            if (!part) return;
+            if (/^[ \t\n\r]+$/.test(part)) { frag.appendChild(document.createTextNode(' ')); return; }
+            var w = document.createElement('span'); w.className = 'w';
+            var wi = document.createElement('span'); wi.className = 'wi'; wi.style.setProperty('--i', i++); wi.textContent = part;
+            w.appendChild(wi); frag.appendChild(w);
+          });
+          node.parentNode.replaceChild(frag, node);
+        });
+      }
+      document.querySelectorAll('[data-split]').forEach(splitWords);
+
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
+      }, { rootMargin: '0px 0px -10% 0px', threshold: 0.1 });
+      document.querySelectorAll('[data-split], [data-fade]').forEach(function (el) { if (!el.closest('#top')) io.observe(el); });
+      // L'accueil s'anime dès le chargement
+      requestAnimationFrame(function () { document.querySelectorAll('#top [data-split], #top [data-fade]').forEach(function (el) { el.classList.add('in'); }); });
+
+      /* ---------- Manifeste : mots allumés au défilement ---------- */
+      var scrub = document.querySelector('[data-scrub]');
+      scrub.innerHTML = scrub.textContent.trim().split(/\s+/).map(function (w) { return '<span class="sw">' + esc(w) + '</span>'; }).join(' ');
+      var scrubWords = scrub.querySelectorAll('.sw');
+
+      /* ---------- Chorégraphie : étape 3D et clair/sombre selon le défilement ---------- */
+      var sections = [].slice.call(document.querySelectorAll('main > section[data-stage]'));
+      var pts = [], vh = innerHeight;
+      function measure() {
+        vh = innerHeight;
+        pts = sections.map(function (s) {
+          var r = s.getBoundingClientRect(), top = r.top + scrollY;
+          return { top: top, bottom: top + r.height, mid: top + r.height / 2, stage: +s.dataset.stage, light: +s.dataset.light, chapter: s.dataset.chapter };
+        });
+      }
+      function smooth(t) { t = Math.min(1, Math.max(0, t)); return t * t * (3 - 2 * t); }
+
+      var GLOW = [ // x (vw), y (vh), opacité, échelle — une position par étape
+        [64, -34, 1, 1], [58, -20, .9, 1.1], [62, -45, .85, .9], [55, -40, .7, 1],
+        [-30, 30, .35, 1.2], [-25, 25, .3, 1.1], [-10, -30, .55, 1]
+      ];
+      var glow = document.getElementById('glow');
+      var chapterEl = document.getElementById('chapter'), chN = document.getElementById('chapter-n'), chT = document.getElementById('chapter-t');
+      var CHAPTERS = ['Accueil', 'Approche', 'Rôles', 'Méthode', 'Projets', 'Étude de cas', 'Hackathons', 'Compétences', 'Contact'];
+      var currentChapter = 'Accueil';
+
+      function update() {
+        var y = scrollY + vh * 0.5, last = pts.length - 1;
+        // étape : interpolation linéaire entre les centres des sections
+        var stage = y <= pts[0].mid ? pts[0].stage : pts[last].stage;
+        for (var i = 0; i < last; i++) {
+          if (y >= pts[i].mid && y <= pts[i + 1].mid) { stage = pts[i].stage + (pts[i + 1].stage - pts[i].stage) * ((y - pts[i].mid) / (pts[i + 1].mid - pts[i].mid)); break; }
+        }
+        // clair/sombre : bascule franche autour des frontières de sections
+        var idx = 0;
+        for (var j = 0; j < pts.length; j++) if (y >= pts[j].top) idx = j;
+        var band = vh * 0.22, L = pts[idx].light;
+        if (idx > 0 && y - pts[idx].top < band) L = pts[idx - 1].light + (L - pts[idx - 1].light) * smooth(0.5 + (y - pts[idx].top) / (2 * band));
+        if (idx < last && pts[idx].bottom - y < band) L = L + (pts[idx + 1].light - L) * smooth(0.5 - (pts[idx].bottom - y) / (2 * band));
+        if (root.classList.contains('all-dark')) L = 0;
+
+        state.stage = stage; state.light = L;
+        root.classList.toggle('is-light', L > 0.5);
+        var c = function (a, b) { return Math.round(a + (b - a) * L); };
+        root.style.setProperty('--bg', 'rgb(' + c(5, 236) + ' ' + c(7, 238) + ' ' + c(13, 242) + ')');
+
+        var a = Math.floor(stage), b = Math.min(GLOW.length - 1, a + 1), t = smooth(stage - a);
+        var g = GLOW[a].map(function (v, k) { return v + (GLOW[b][k] - v) * t; });
+        glow.style.transform = 'translate(' + g[0] + 'vw,' + g[1] + 'vh) scale(' + g[3] + ')';
+        glow.style.opacity = (g[2] * (1 - L * 0.75)).toFixed(3);
+
+        // chapitre
+        var ch = 'Accueil';
+        for (var k = 0; k < pts.length; k++) if (pts[k].chapter && y >= pts[k].top) ch = pts[k].chapter;
+        if (ch !== currentChapter) {
+          currentChapter = ch;
+          chapterEl.classList.add('swap');
+          chN.textContent = String(CHAPTERS.indexOf(ch)).padStart(2, '0');
+          chT.textContent = ch;
+          requestAnimationFrame(function () { requestAnimationFrame(function () { chapterEl.classList.remove('swap'); }); });
+        }
+
+        // manifeste
+        var r = scrub.getBoundingClientRect();
+        var p = (vh * 0.85 - r.top) / (vh * 0.6 + r.height * 0.5);
+        var lit = p * scrubWords.length;
+        // mots non lus en bleu, mots lus dans la couleur du texte : aucun gris
+        scrubWords.forEach(function (w, n) { var t = Math.min(1, Math.max(0, lit - n)); w.style.color = 'color-mix(in srgb, var(--ink) ' + Math.round(t * 100) + '%, #ffffff)'; });
+      }
+      function refresh() { measure(); update(); }
+
+      refresh();
+      window.addEventListener('resize', refresh);
+      window.addEventListener('load', refresh);
+      if (document.fonts) document.fonts.ready.then(refresh);
+      window.addEventListener('scroll', update, { passive: true });
+
+      /* ---------- Sombre partout ---------- */
+      var themeBtn = document.getElementById('theme-toggle');
+      function syncTheme() {
+        var on = root.classList.contains('all-dark');
+        themeBtn.setAttribute('aria-pressed', String(on));
+        themeBtn.setAttribute('aria-label', on ? 'Afficher les sections claires' : 'Passer en sombre partout');
+      }
+      themeBtn.addEventListener('click', function () {
+        var on = root.classList.toggle('all-dark');
+        try { localStorage.setItem('all-dark', on ? '1' : '0'); }
+        catch (err) { console.warn('Préférence de thème non enregistrée :', err); }
+        syncTheme(); update();
+      });
+      syncTheme();
+
+      /* ---------- Menu mobile ---------- */
+      var menuBtn = document.getElementById('menu-toggle'), menu = document.getElementById('menu-mobile');
+      function setMenu(open) {
+        menu.classList.toggle('hidden', !open);
+        menuBtn.setAttribute('aria-expanded', String(open));
+        menuBtn.setAttribute('aria-label', open ? 'Fermer le menu' : 'Ouvrir le menu');
+      }
+      menuBtn.addEventListener('click', function () { setMenu(menu.classList.contains('hidden')); });
+
+      /* ---------- Formulaire (ouvre la messagerie) ---------- */
+      var form = document.getElementById('contact-form'), formStatus = document.getElementById('form-status');
+      var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+      function check(input, ok) {
+        var err = document.getElementById(input.id + '-err');
+        input.setAttribute('aria-invalid', String(!ok)); if (err) err.hidden = ok; return ok;
+      }
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var f = form.elements;
+        var ok = [check(f.name, f.name.value.trim().length > 0), check(f.email, EMAIL_RE.test(f.email.value.trim())), check(f.message, f.message.value.trim().length > 0)].every(Boolean);
+        if (!ok) { formStatus.textContent = 'Le message n’est pas prêt : corrigez les champs signalés.'; form.querySelector('[aria-invalid="true"]').focus(); return; }
+        var subject = 'Stage consultant Data & IA · ' + f.name.value.trim() + (f.org.value.trim() ? ' (' + f.org.value.trim() + ')' : '');
+        var body = f.message.value.trim() + '\n\n' + f.name.value.trim() + '\n' + f.email.value.trim();
+        window.location.href = 'mailto:josephhalle@hotmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+        formStatus.textContent = 'Votre messagerie s’ouvre avec le message prêt. Rien ne s’ouvre ? Écrivez directement à josephhalle@hotmail.com.';
+      });
+      form.addEventListener('input', function (e) {
+        var t = e.target;
+        if (t.getAttribute('aria-invalid') === 'true') check(t, t.value.trim().length > 0 && (t.type !== 'email' || EMAIL_RE.test(t.value.trim())));
+      });
+    })();
+  </script>
+
+  <!-- =====================  Scène 3D  ===================== -->
+  <script type="importmap">
+    { "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    } }
+  </script>
+  <script type="module">
+    import * as THREE from 'three';
+    import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+    import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+    const S = window.sceneState;
+    const canvas = document.getElementById('scene');
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const mobile = matchMedia('(max-width: 767px)').matches;
+
+    let renderer = null;
+    try {
+      renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+    } catch (err) {
+      document.documentElement.classList.add('no-webgl');
+      console.warn('WebGL indisponible : le fond reste statique.', err);
+    }
+    if (renderer) start(renderer);
+
+    function start(renderer) {
+      renderer.setPixelRatio(Math.min(devicePixelRatio, mobile ? 1.5 : 2));
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.toneMapping = THREE.NoToneMapping; // ACES délavait les bleus vers le violet
+      renderer.setClearColor(0x000000, 0);
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(35, innerWidth / innerHeight, 0.1, 100);
+      camera.position.set(0, 0, 12);
+      const DARK = new THREE.Color('#05070d'), LIGHT = new THREE.Color('#eceef2');
+      scene.fog = new THREE.Fog(DARK.clone(), 12, 36);
+
+      const pmrem = new THREE.PMREMGenerator(renderer);
+      scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), 0.04).texture;
+      const key = new THREE.DirectionalLight(0xffffff, 1.6); key.position.set(-4, 6, 8); scene.add(key);
+      const rim = new THREE.DirectionalLight(0x9fc4ff, 1.1); rim.position.set(6, 2, 4); scene.add(rim);
+      scene.add(new THREE.AmbientLight(0xffffff, 0.35));
+
+      /* ----- Compétences inscrites sur les tuiles (tirées du CV) ----- */
+      // Les tuiles du centre de l'écran d'accueil (index 4 à 9) portent les compétences clés ; les 10 premières (mobile) couvrent les trois catégories.
+      const SKILLS = [
+        ['NumPy', 'Data'], ['Zapier', 'IA'], ['Sheets', 'Business'], ['Agile', 'Business'],
+        ['SQL', 'Data'], ['Power BI', 'Data'], ['APIs LLM', 'IA'], ['Excel', 'Business'],
+        ['Python', 'Data'], ['KPIs', 'Business'], ['Make', 'IA'], ['Pandas', 'Data'],
+        ['ROI', 'Business'], ['Prompt', 'IA']
+      ];
+
+      function drawFace(c, label, cat) {
+        const g = c.getContext('2d');
+        g.clearRect(0, 0, 256, 256);
+        const grad = g.createLinearGradient(0, 0, 256, 256);
+        grad.addColorStop(0, '#5fa0ff'); grad.addColorStop(0.5, '#3478ff'); grad.addColorStop(1, '#2360f5');
+        g.fillStyle = grad; g.beginPath(); g.roundRect(4, 4, 248, 248, 34); g.fill();
+        const gloss = g.createLinearGradient(0, 0, 0, 140);
+        gloss.addColorStop(0, 'rgba(255,255,255,.2)'); gloss.addColorStop(1, 'rgba(255,255,255,0)');
+        g.fillStyle = gloss; g.beginPath(); g.roundRect(4, 4, 248, 140, [34, 34, 0, 0]); g.fill();
+        // catégorie en petit, en haut
+        g.fillStyle = 'rgba(255,255,255,.92)'; g.textAlign = 'center'; g.textBaseline = 'alphabetic';
+        g.font = '500 21px "IBM Plex Mono", ui-monospace, monospace';
+        g.fillText(cat.toUpperCase().split('').join(String.fromCharCode(8202)), 128, 58);
+        // nom de la compétence, ajusté à la largeur
+        let size = 74;
+        g.font = '600 ' + size + 'px "Host Grotesk", system-ui, sans-serif';
+        while (g.measureText(label).width > 200 && size > 30) { size -= 2; g.font = '600 ' + size + 'px "Host Grotesk", system-ui, sans-serif'; }
+        g.fillStyle = '#fff'; g.textBaseline = 'middle';
+        g.shadowColor = 'rgba(8, 24, 100, .45)'; g.shadowBlur = 6; g.shadowOffsetY = 2;
+        g.fillText(label, 128, 150);
+        g.shadowColor = 'transparent';
+      }
+
+      const faces = SKILLS.map(([label, cat]) => {
+        const c = document.createElement('canvas'); c.width = c.height = 256;
+        drawFace(c, label, cat);
+        const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8;
+        return { c, t, label, cat };
+      });
+      // Redessine quand les polices du site sont chargées (sinon police de secours).
+      if (document.fonts) {
+        Promise.all([document.fonts.load('600 74px "Host Grotesk"'), document.fonts.load('500 21px "IBM Plex Mono"')])
+          .then(() => faces.forEach((f) => { drawFace(f.c, f.label, f.cat); f.t.needsUpdate = true; }))
+          .catch((err) => console.warn('Polices des tuiles non chargées, police de secours utilisée :', err));
+      }
+      const textures = faces.map((f) => f.t);
+
+      /* ----- Tuiles ----- */
+      const N = mobile ? 10 : 14;
+      const boxGeo = new RoundedBoxGeometry(1.5, 1.5, 0.36, 4, 0.16);
+      const faceGeo = new THREE.PlaneGeometry(1.4, 1.4);
+      const bodyMat = new THREE.MeshPhysicalMaterial({ color: 0x3a7cff, roughness: 0.22, metalness: 0.05, clearcoat: 1, clearcoatRoughness: 0.08, emissive: 0x1a4fe0, emissiveIntensity: 0.35, envMapIntensity: 0.75 });
+      const tiles = [];
+      for (let i = 0; i < N; i++) {
+        const grp = new THREE.Group();
+        grp.add(new THREE.Mesh(boxGeo, bodyMat));
+        const tex = textures[i % textures.length];
+        const face = new THREE.Mesh(faceGeo, new THREE.MeshStandardMaterial({ map: tex, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0.42, roughness: 0.4, envMapIntensity: 0.35, transparent: true }));
+        face.position.z = 0.182; grp.add(face);
+        grp.userData = { pos: new THREE.Vector3(0, 0, -30), quat: new THREE.Quaternion(), s: 0.001 };
+        scene.add(grp); tiles.push(grp);
+      }
+
+      /* ----- Grille en perspective + croix ----- */
+      const grid = new THREE.Group(); scene.add(grid);
+      const STEP = 2.4, EXT = 36, lp = [];
+      for (let v = -EXT; v <= EXT; v += STEP) lp.push(-EXT, v, 0, EXT, v, 0, v, -EXT, 0, v, EXT, 0);
+      const lineGeo = new THREE.BufferGeometry(); lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(lp, 3));
+      const lineMat = new THREE.LineBasicMaterial({ color: 0xdfe8ff, transparent: true, opacity: 0.3, depthWrite: false });
+      grid.add(new THREE.LineSegments(lineGeo, lineMat));
+
+      const plus = document.createElement('canvas'); plus.width = plus.height = 64;
+      const pg = plus.getContext('2d'); pg.strokeStyle = '#fff'; pg.lineWidth = 5;
+      pg.beginPath(); pg.moveTo(32, 4); pg.lineTo(32, 60); pg.moveTo(4, 32); pg.lineTo(60, 32); pg.stroke();
+      const cp = [];
+      for (let x = -EXT; x <= EXT; x += STEP * 2) for (let y = -EXT; y <= EXT; y += STEP * 2) cp.push(x, y, 0.01);
+      const crossGeo = new THREE.BufferGeometry(); crossGeo.setAttribute('position', new THREE.Float32BufferAttribute(cp, 3));
+      const crossMat = new THREE.PointsMaterial({ map: new THREE.CanvasTexture(plus), size: 0.85, transparent: true, opacity: 1, depthWrite: false, color: 0xe6eeff });
+      grid.add(new THREE.Points(crossGeo, crossMat));
+
+      /* ----- Poussière d'étoiles ----- */
+      const sp = [];
+      for (let i = 0; i < 520; i++) sp.push((Math.random() - .5) * 50, (Math.random() - .5) * 30, -Math.random() * 32 + 2);
+      const starGeo = new THREE.BufferGeometry(); starGeo.setAttribute('position', new THREE.Float32BufferAttribute(sp, 3));
+      const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.05, transparent: true, opacity: 0.6, depthWrite: false });
+      scene.add(new THREE.Points(starGeo, starMat));
+
+      /* ----- Chorégraphie : une formation par étape ----- */
+      const GRID = [ // rotation x, rotation z, y, z
+        [-1.15, 0.42, -1.2, -3], [-0.95, 0.62, -0.6, -4], [-0.55, 0.28, 0, -7], [-1.0, 0.12, -1.4, -2],
+        [-1.32, 0.0, -3.2, -3], [-1.32, -0.2, -3.2, -3], [-1.05, -0.45, -1.6, -3]
+      ];
+      const E = new THREE.Euler(), V = new THREE.Vector3(), Q = new THREE.Quaternion(), OFF = new THREE.Vector3();
+      let hh = 1, hw = 1;
+
+      function layout(k, i, outP, outQ) {
+        const n = N; let s = 1;
+        if (k === 0) { // rangée en hauteur
+          const x = (i - (n - 1) / 2) * (mobile ? 1.9 : 2.5);
+          outP.set(x, hh * (mobile ? 0.76 : 0.42) + Math.sin(i * 1.7) * (mobile ? 0.15 : 0.35), -1.5 - (i % 3) * 1.4);
+          E.set(0.2, -x * 0.04, Math.sin(i) * 0.08); s = mobile ? 0.7 : 1.1;
+        } else if (k === 1 || k === 2) { // anneau, puis anneau élargi autour du texte
+          const a = i / n * Math.PI * 2 + 0.4 + (k === 2 ? 0.55 : 0), r = k === 2 ? 1.0 : 0.86;
+          outP.set(Math.cos(a) * hw * r, Math.sin(a) * hh * r * 1.02, -0.5 - (i % 3) * 0.9 - (k === 2 ? 0.6 : 0));
+          E.set(-Math.sin(a) * 0.5, Math.cos(a) * 0.5, a * 0.15); s = k === 2 ? 0.7 : 0.82;
+        } else if (k === 3) { // posées à plat sur la grille
+          const g = GRID[3], row = Math.floor(i / 5);
+          V.set(((i % 5) - 2) * 3.0 + (row % 2) * 1.5, 2.6 - row * 3.0, 0.24);
+          E.set(g[0], 0, g[1]); V.applyEuler(E); V.add(OFF.set(0, g[2], g[3]));
+          outP.copy(V); s = 0.8;
+        } else if (k === 4 || k === 5) { // colonne sur le bord pour laisser lire
+          const side = k === 4 ? 1 : -1;
+          outP.set(side * (hw * 0.98 + (i % 2) * 0.8), hh * (1 - 2 * i / (n - 1)) * 1.05, -2.5 - (i % 3));
+          E.set(0.3, -side * 0.6, 0.1 * i); s = 0.6;
+        } else { // arc posé en bas de l'écran, sous le contact
+          const u = (i - (n - 1) / 2) / ((n - 1) / 2);
+          outP.set(u * hw * 1.05, -hh * 1.12 + u * u * hh * 0.18, -1.5 - Math.abs(u) * 1.5);
+          E.set(-0.5, -u * 0.5, u * 0.2); s = 0.72;
+        }
+        outQ.setFromEuler(E);
+        return s;
+      }
+
+      const pA = new THREE.Vector3(), pB = new THREE.Vector3(), qA = new THREE.Quaternion(), qB = new THREE.Quaternion();
+      const target = new THREE.Vector3(), tq = new THREE.Quaternion();
+      const pointer = { x: 0, y: 0 };
+      addEventListener('pointermove', (e) => { pointer.x = e.clientX / innerWidth - 0.5; pointer.y = e.clientY / innerHeight - 0.5; });
+
+      function resize() {
+        renderer.setSize(innerWidth, innerHeight, false);
+        camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
+        hh = camera.position.z * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)); hw = hh * camera.aspect;
+      }
+      addEventListener('resize', resize); resize();
+
+      const sm = (t) => t * t * (3 - 2 * t);
+      const expo = (t) => (t >= 1 ? 1 : 1 - Math.pow(2, -10 * t));
+      const clock = new THREE.Clock();
+
+      function frame() {
+        const dt = Math.min(clock.getDelta(), 0.05), time = clock.elapsedTime;
+        const stage = Math.min(6, Math.max(0, S.stage)), L = S.light;
+        const a = Math.floor(stage), b = Math.min(6, a + 1), t = sm(stage - a);
+        const intro = reduce ? 1 : expo(Math.min(1, (performance.now() - S.introStart) / 2000));
+        const follow = 1 - Math.exp(-dt * (reduce ? 60 : 7));
+
+        tiles.forEach((tile, i) => {
+          const sA = layout(a, i, pA, qA), sB = layout(b, i, pB, qB);
+          target.lerpVectors(pA, pB, t); tq.slerpQuaternions(qA, qB, t);
+          const s = sA + (sB - sA) * t;
+          if (!reduce) {
+            target.y += Math.sin(time * 0.7 + i * 1.3) * 0.09;
+            Q.setFromEuler(E.set(Math.sin(time * 0.5 + i) * 0.05, Math.cos(time * 0.4 + i) * 0.06, 0)); tq.multiply(Q);
+          }
+          // entrée : les tuiles arrivent du fond
+          target.z = THREE.MathUtils.lerp(-28, target.z, intro); target.x *= THREE.MathUtils.lerp(1.6, 1, intro);
+          const u = tile.userData;
+          u.pos.lerp(target, follow); u.quat.slerp(tq, follow); u.s += (s * intro - u.s) * follow;
+          tile.position.copy(u.pos); tile.quaternion.copy(u.quat); tile.scale.setScalar(Math.max(0.001, u.s));
+        });
+
+        // grille
+        const gA = GRID[a], gB = GRID[b];
+        grid.rotation.set(gA[0] + (gB[0] - gA[0]) * t, 0, gA[1] + (gB[1] - gA[1]) * t);
+        grid.position.set(0, gA[2] + (gB[2] - gA[2]) * t, gA[3] + (gB[3] - gA[3]) * t);
+
+        // couleurs selon clair/sombre
+        scene.fog.color.copy(DARK).lerp(LIGHT, L);
+        const lc = L > 0.5 ? 0x0b0f17 : 0xe6eeff;
+        lineMat.color.setHex(lc); crossMat.color.setHex(lc);
+        lineMat.opacity = 0.3 - L * 0.18; crossMat.opacity = 1 - L * 0.7; starMat.opacity = 0.6 * (1 - L);
+
+        // parallaxe légère au pointeur
+        if (!reduce) {
+          camera.position.x += (pointer.x * 0.5 - camera.position.x) * 0.04;
+          camera.position.y += (-pointer.y * 0.35 - camera.position.y) * 0.04;
+        }
+        camera.lookAt(0, 0, 0);
+        renderer.render(scene, camera);
+        requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    }
+  </script>
+</body>
+</html>
